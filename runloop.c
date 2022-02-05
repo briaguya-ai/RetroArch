@@ -3099,13 +3099,14 @@ bool runloop_environment_cb(unsigned cmd, void *data)
 #ifdef HAVE_MENU
          menu_opened = menu_state_get_ptr()->alive;
          if (menu_opened)
+         {
 #ifdef HAVE_NETWORKING
-            core_paused = settings->bools.menu_pause_libretro &&
-               netplay_driver_ctl(RARCH_NETPLAY_CTL_ALLOW_PAUSE, NULL);
+            if(netplay_driver_ctl(RARCH_NETPLAY_CTL_ALLOW_PAUSE, NULL))
+               core_paused = core_paused || settings->bools.menu_pause_libretro;
 #else
-            core_paused = settings->bools.menu_pause_libretro;
+            core_paused = core_paused || settings->bools.menu_pause_libretro;
 #endif
-
+         }
 #endif
 
          if (core_paused)
